@@ -34,7 +34,7 @@ load_weights = function(file, gene_col, weight_col, p_col, sep="\t", header = T)
   names(munge_file)[names(munge_file) %in% p_col] = "pvalue"
   
   # -- object available to environment 
-  munge_file <<- munge_file[order(munge_file$pvalue, decreasing = FALSE), ]
+  ptrs_weights <<- munge_file[order(munge_file$pvalue, decreasing = FALSE), ]
 }
 
 ptrs = function(dat, p_thres = c(0.001, 0.01, 0.05, 0.1, 0.5, 1.0), scale_scores = TRUE){
@@ -44,8 +44,8 @@ ptrs = function(dat, p_thres = c(0.001, 0.01, 0.05, 0.1, 0.5, 1.0), scale_scores
   # -- format as data frame
   dat = data.frame(dat)
   
-  # -- check that rownames match gene_id column in munge_file
-  common_gene_id = intersect(rownames(dat), munge_file$gene_id)
+  # -- check that rownames match gene_id column in ptrs_weights
+  common_gene_id = intersect(rownames(dat), ptrs_weights$gene_id)
   if(length(common_gene_id) < 1){stop("No common gene IDs were found! Please check that gene IDs are in same style between target data set and weights file.")}
   
   # -- reorder dat according to munge_file
@@ -58,7 +58,7 @@ ptrs = function(dat, p_thres = c(0.001, 0.01, 0.05, 0.1, 0.5, 1.0), scale_scores
   scores = list()
   for(x in 1:length(p_thres)){
     message("\rScoring threshold: ", p_thres[[x]])
-    weight_sub = munge_file[munge_file$pvalue <= p_thres[[x]], ]
+    weight_sub = ptrs_weights[ptrs_weights$pvalue <= p_thres[[x]], ]
     dat_sub = dat[rownames(dat) %in% weight_sub$gene_id, ]
     dat_sub = data.frame(t(dat_sub))
     scoreMatrix = sweep(dat_sub, MARGIN = 2, STATS = weight_sub$weight, `*`)
