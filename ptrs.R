@@ -11,7 +11,6 @@ e-mail: hessjo@upstate.edu
 cat(masthead)
 
 # --- load packages
-suppressMessages(require(plyr))
 suppressMessages(require(data.table))
 
 # -- functions
