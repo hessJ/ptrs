@@ -93,7 +93,7 @@ ptrs = function(dat = NULL, weight_table = NULL, p_thres = c(0.001, 0.01, 0.05, 
     }
   }
   score_df = data.frame(do.call(cbind, scores))
-  colnames(score_df) = paste("ptrs.",p_thres, sep="")
+  colnames(score_df) = paste("ptrs_",1:length(p_thres), sep="")
   return(score_df)
 }
 
